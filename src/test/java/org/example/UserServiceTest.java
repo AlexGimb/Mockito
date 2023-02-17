@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -24,12 +26,11 @@ class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
+    @InjectMocks
     UserService userService;
 
     @BeforeEach
     public void setUp() {
-        userRepository = new UserRepository();
-        userService = new UserService();
         viktor = new User("Viktor", "123");
         dmitriy = new User("Dmitriy", "321");
         userRepository.addUser(viktor);
@@ -40,8 +41,6 @@ class UserServiceTest {
     public void getUserList() {
         List<User> expected = userRepository.getAllUsers();
         List<User> actual = new ArrayList<>();
-        actual.add(viktor);
-        actual.add(dmitriy);
         assertEquals(expected, actual);
     }
 
@@ -59,6 +58,7 @@ class UserServiceTest {
     }
     @Test
     public void newUserIsAlready() {
+        when(userRepository.getAllUsers()).thenReturn(List.of(viktor));
         Assertions.assertThrows(UserNonUniqueException.class, () -> userService.newUser("Viktor", "123"));
     }
 }

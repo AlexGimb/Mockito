@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserService {
-    UserRepository userRepository = new UserRepository();
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public List<String> getAllUsers() {
-        return userRepository.users.stream()
+        return userRepository.getAllUsers().stream()
                 .map(User::getLogin)
                 .collect(Collectors.toList());
     }
